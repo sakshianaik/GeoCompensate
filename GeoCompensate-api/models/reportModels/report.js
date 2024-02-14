@@ -6,6 +6,7 @@ const reportSchema = new Schema({
     startDate: { type: Date, require: true },
     endDate: { type: Date, require: true },
     hours: { type: Schema.Types.Number, default: 0 },
+    pay: { type: Schema.Types.Number, default: 0 }
 });
 
 module.exports = model("Report", reportSchema);
