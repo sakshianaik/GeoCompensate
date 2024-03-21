@@ -39,6 +39,7 @@ const Login = ({navigation}) => {
         onChangeText={text => setEmail(text)}
       />
       <TextInput
+        secureTextEntry={true}
         label={'Password'}
         style={styles.emailInput}
         value={password}
