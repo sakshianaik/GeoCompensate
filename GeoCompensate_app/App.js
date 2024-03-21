@@ -1,12 +1,26 @@
-import React from 'react';
-import {SafeAreaView, useColorScheme} from 'react-native';
-import {Button} from 'react-native-paper';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import React, {useState} from 'react';
+import HomeScreen from './src/screens/HomeScreen';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from './src/screens/Login';
 
+const Stack = createNativeStackNavigator();
+
+function MyStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+    </Stack.Navigator>
+  );
+}
+
 function App() {
-  return <Login />;
+  return (
+    <NavigationContainer>
+      <MyStack />
+    </NavigationContainer>
+  );
 }
 
 export default App;
