@@ -1,25 +1,25 @@
-import React from 'react';
-import {SafeAreaView, useColorScheme} from 'react-native';
-import {Button} from 'react-native-paper';
+import React, {useState} from 'react';
+import HomeScreen from './src/screens/HomeScreen';
+import {Login} from './src/screens/Login';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+const Stack = createNativeStackNavigator();
+
+function MyStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Login" component={Login} />
+    </Stack.Navigator>
+  );
+}
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <Button
-        icon="camera"
-        mode="outlined"
-        onPress={() => console.log('Pressed')}>
-        Press me
-      </Button>
-    </SafeAreaView>
+    <NavigationContainer>
+      <MyStack />
+    </NavigationContainer>
   );
 }
 
