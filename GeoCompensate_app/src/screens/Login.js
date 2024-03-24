@@ -1,54 +1,78 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {TextInput, Button, Text} from 'react-native-paper';
-import axios from 'axios';
+import {TextInput, Button, Text, HelperText} from 'react-native-paper';
 import {Colors} from '../assets/themes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {authneticateUser} from '../services/auth';
 
 const Login = ({navigation}) => {
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = React.useState('');
+  const [errorMsg, setErrorMsg] = React.useState(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('user')
+      .then(value => {
+        if (value?.length > 0) {
+          navigation.navigate('Home');
+        }
+      })
+      .catch(error => console.error('AsyncStorage error: ', error));
+  }, [navigation]);
+
+  const saveUser = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (error) {
+      console.log('Error saving data:', error);
+    }
+  };
 
   const handleLogin = async () => {
     const dataToSend = {
       empId: email,
       password: password,
     };
-    try {
-      const response = await axios.post(
-        'http://10.0.2.2:3001/api/v1/login',
-        dataToSend,
-      );
-      response.data
-        ? navigation.navigate('Home')
-        : 'Invalid credentials. Try again!';
-      console.log('Response:', response.data);
-    } catch (error) {
-      console.error('Error sending data:', JSON.stringify(error));
+
+    const access_token = authneticateUser(dataToSend);
+    if (access_token) {
+      saveUser('user', access_token);
+      setErrorMsg(null);
+      navigation.navigate('Home');
+    } else {
+      setErrorMsg('Invalid credentials. Try again!');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text variant="headlineLarge" style={styles.heading}>
-        GeoCompensate
-      </Text>
-      <TextInput
-        label={'Employee ID'}
-        style={styles.emailInput}
-        value={email}
-        onChangeText={text => setEmail(text)}
-      />
-      <TextInput
-        secureTextEntry={true}
-        label={'Password'}
-        style={styles.emailInput}
-        value={password}
-        onChangeText={text => setPassword(text)}
-      />
-      <Button style={styles.button} mode="contained" onPress={handleLogin}>
-        Login
-      </Button>
-    </View>
+    <>
+      <View style={styles.container}>
+        <Text variant="headlineLarge" style={styles.heading}>
+          GeoCompensate
+        </Text>
+        <TextInput
+          label={'Employee ID'}
+          style={styles.emailInput}
+          value={email}
+          onChangeText={text => setEmail(text)}
+        />
+        <TextInput
+          secureTextEntry={true}
+          label={'Password'}
+          style={styles.emailInput}
+          value={password}
+          onChangeText={text => setPassword(text)}
+        />
+        <Button style={styles.button} mode="contained" onPress={handleLogin}>
+          Login
+        </Button>
+        <HelperText
+          type="error"
+          visible={errorMsg != null && errorMsg.length > 0}>
+          {errorMsg}
+        </HelperText>
+      </View>
+    </>
   );
 };
 
