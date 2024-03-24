@@ -1,15 +1,18 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import {BottomNavigation, Text} from 'react-native-paper';
+import Dashboard from './Dashboard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Profile from './Profile';
 
-const HomeRoute = () => <Text>Home</Text>;
+const HomeRoute = navigation => <Dashboard navigation={navigation} />;
 
-const PayRoute = () => <Text>Pay</Text>;
+const TimesheetRoute = () => <Text>Timesheet</Text>;
 
-const ProfileRoute = () => <Text>Profile</Text>;
+const ProfileRoute = () => <Profile />;
 
-const AlertRoute = () => <Text>Alert</Text>;
+const MoreRoute = () => <Text>More</Text>;
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
@@ -19,10 +22,10 @@ const HomeScreen = () => {
       unfocusedIcon: 'home-outline',
     },
     {
-      key: 'pay',
-      title: 'Pay',
-      focusedIcon: 'cash',
-      unfocusedIcon: 'cash',
+      key: 'timsheet',
+      title: 'Timsheet',
+      focusedIcon: 'clock-time-three',
+      unfocusedIcon: 'clock-time-three-outline',
     },
     {
       key: 'profile',
@@ -31,18 +34,30 @@ const HomeScreen = () => {
       unfocusedIcon: 'account-outline',
     },
     {
-      key: 'alert',
-      title: 'Alert',
-      focusedIcon: 'bell',
-      unfocusedIcon: 'bell-outline',
+      key: 'more',
+      title: 'More',
+      focusedIcon: 'more',
+      unfocusedIcon: 'more',
     },
   ]);
 
+  useEffect(() => {
+    AsyncStorage.getItem('user')
+      .then(value => {
+        if (value == null) {
+          navigation.navigate('Login');
+        }
+      })
+      .catch(error => console.error('AsyncStorage error: ', error));
+  }, [navigation]);
+
   const renderScene = BottomNavigation.SceneMap({
-    home: HomeRoute,
-    pay: PayRoute,
+    home: () => {
+      return HomeRoute(navigation);
+    },
+    timsheet: TimesheetRoute,
     profile: ProfileRoute,
-    alert: AlertRoute,
+    more: MoreRoute,
   });
 
   return (

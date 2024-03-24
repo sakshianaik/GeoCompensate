@@ -10,6 +10,7 @@ const employeeSchema = new Schema({
     firstName: { type: String, require: true },
     lastName: String,
     email: { type: String, require: true, unique: true },
+    password: { type: Schema.Types.String, require: true},
     phone: Schema.Types.Number,
     ssn: Schema.Types.Number,
     type: { type: Schema.Types.String, enum: Object.keys(USER_TYPE), require: true }, 
