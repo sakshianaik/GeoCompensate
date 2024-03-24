@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {TextInput, Button, Text, HelperText} from 'react-native-paper';
 import {Colors} from '../assets/themes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authneticateUser} from '../services/auth';
+import logo from '../assets/images/logo.png';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -34,7 +35,8 @@ const Login = ({navigation}) => {
       password: password,
     };
 
-    const access_token = authneticateUser(dataToSend);
+    const data = await authneticateUser(dataToSend);
+    const access_token = data?.access_token;
     if (access_token) {
       saveUser('user', access_token);
       setErrorMsg(null);
@@ -47,19 +49,17 @@ const Login = ({navigation}) => {
   return (
     <>
       <View style={styles.container}>
-        <Text variant="headlineLarge" style={styles.heading}>
-          GeoCompensate
-        </Text>
+        <Image source={logo} style={styles.logo} />
         <TextInput
           label={'Employee ID'}
-          style={styles.emailInput}
+          style={styles.input}
           value={email}
           onChangeText={text => setEmail(text)}
         />
         <TextInput
           secureTextEntry={true}
           label={'Password'}
-          style={styles.emailInput}
+          style={styles.input}
           value={password}
           onChangeText={text => setPassword(text)}
         />
@@ -85,17 +85,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: Colors.grayBlue,
   },
+  logo: {
+    height: 60,
+    width: 20,
+    minWidth: '90%',
+  },
   heading: {
     color: Colors.darkGrayBlue,
     marginBottom: 20,
     fontWeight: '800',
   },
-  emailInput: {
-    marginBottom: 20,
+  input: {
+    marginTop: 30,
     width: '100%',
     backgroundColor: Colors.white,
   },
   button: {
+    marginTop: 30,
     backgroundColor: Colors.darkGrayBlue,
   },
 });
