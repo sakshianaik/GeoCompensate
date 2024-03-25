@@ -40,6 +40,8 @@ const Login = ({navigation}) => {
     if (access_token) {
       saveUser('user', access_token);
       setErrorMsg(null);
+      setEmail(null);
+      setPassword(null);
       navigation.navigate('Home');
     } else {
       setErrorMsg('Invalid credentials. Try again!');

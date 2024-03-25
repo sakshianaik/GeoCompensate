@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import {Button} from 'react-native-paper';
+import Header from '../components/molecules/header';
+import ClockInBox from '../components/molecules/clockInBox';
+import TimingItems from '../components/atoms/timingItems';
 
 const Dashboard = ({navigation}) => {
   const handleLogout = () => {
@@ -9,7 +11,13 @@ const Dashboard = ({navigation}) => {
     });
   };
 
-  return <Button onPress={handleLogout}>Logout</Button>;
+  return (
+    <>
+      <Header navigation={navigation} />
+      <ClockInBox />
+      <TimingItems />
+    </>
+  );
 };
 
 export default Dashboard;
