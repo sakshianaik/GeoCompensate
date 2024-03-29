@@ -1,16 +1,19 @@
 import React, {useEffect} from 'react';
 import {BottomNavigation, Text} from 'react-native-paper';
 import Dashboard from './Dashboard';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import EmployeeRegister from './EmployeeRegister'
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import Profile from './Profile';
 
 const HomeRoute = navigation => <Dashboard navigation={navigation} />;
+
 
 const TimesheetRoute = () => <Text>Timesheet</Text>;
 
 const ProfileRoute = () => <Profile />;
 
-const MoreRoute = () => <Text>More</Text>;
+const MoreRoute = navigation => <EmployeeRegister navigation={navigation} />;
+// const MoreRoute = () => <Text>More</Text>;
 
 const HomeScreen = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
@@ -41,23 +44,26 @@ const HomeScreen = ({navigation}) => {
     },
   ]);
 
-  useEffect(() => {
-    AsyncStorage.getItem('user')
-      .then(value => {
-        if (value == null) {
-          navigation.navigate('Login');
-        }
-      })
-      .catch(error => console.error('AsyncStorage error: ', error));
-  }, [navigation]);
+  // useEffect(() => {
+  //   AsyncStorage.getItem('user')
+  //     .then(value => {
+  //       if (value == null) {
+  //         navigation.navigate('Login');
+  //       }
+  //     })
+  //     .catch(error => console.error('AsyncStorage error: ', error));
+  // }, [navigation]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: () => {
       return HomeRoute(navigation);
     },
+    more: () => {
+      return MoreRoute(navigation);
+    },
     timsheet: TimesheetRoute,
     profile: ProfileRoute,
-    more: MoreRoute,
+    // more: MoreRoute,
   });
 
   return (
