@@ -1,67 +1,91 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Avatar, Card, Text, Title} from 'react-native-paper';
+import {Avatar, Card, Text} from 'react-native-paper';
 import Clock from 'react-live-clock';
 import {Colors} from '../../assets/themes';
 
 const ClockInBox = () => {
   return (
-    <Card
-      style={{borderRadius: 0, backgroundColor: Colors.grayBlue, padding: 10}}>
-      <Card.Content style={styels.clk}>
-        <Text variant="headlineMedium">
-          <Clock
-            style={styels.clockTime}
-            element={Text}
-            format={'HH:mm:ss'}
-            ticking={true}
-            timezone={'US/Central'}
-          />
-        </Text>
-
-        <View style={styels.symb}>
-          <View style={styels.iconCont}>
-            <Avatar.Icon size={24} style={styels.icon} icon="clock" />
-            <Text style={styels.ictxt} variant="labelSmall">
-              Clocked Out{' '}
-            </Text>
-          </View>
-          <View style={styels.iconCont}>
-            <Avatar.Icon style={styels.icon} size={24} icon="pin" />
-            <Text style={styels.ictxt} variant="labelSmall">
-              Arlington, Texas{' '}
-            </Text>
-          </View>
-        </View>
-        <View style={styels.borderBottom} />
-        <View style={styels.clkIn}>
-          <Text style={styels.clkIn1} variant="titleMedium">
-            Clock In
+    <>
+      <Text style={styles.hdrTitle}>Home</Text>
+      <View>
+        <Text style={styles.welcome}>Welcome, Nandish!</Text>
+      </View>
+      <Card style={styles.card} elevation={0}>
+        <Card.Content style={styles.clk}>
+          <Text variant="headlineMedium">
+            <Clock
+              style={styles.clockTime}
+              element={Text}
+              format={'HH:mm:ss'}
+              ticking={true}
+              timezone={'US/Central'}
+            />
           </Text>
-          <View style={styels.clkIn2}>
-            <Avatar.Icon size={24} icon="folder" />
+          <View style={styles.symb}>
+            <View style={styles.iconCont}>
+              <Avatar.Icon size={30} style={styles.icon} icon="clock" />
+              <Text style={styles.ictxt} variant="labelSmall">
+                Clocked Out
+              </Text>
+            </View>
+            <View style={styles.iconCont}>
+              <Avatar.Icon style={styles.icon} size={30} icon="pin" />
+              <Text style={styles.ictxt} variant="labelSmall">
+                Arlington, Texas
+              </Text>
+            </View>
           </View>
-        </View>
-      </Card.Content>
-    </Card>
+          <View style={styles.borderBottom} />
+          <View style={styles.clkIn}>
+            <Text style={styles.clkIn1} variant="titleMedium">
+              Clock In
+            </Text>
+            <View style={styles.clkIn2}>
+              <Avatar.Icon
+                style={styles.clkIn2.icon}
+                size={30}
+                icon="dots-horizontal"
+              />
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+    </>
   );
 };
-const styels = StyleSheet.create({
+const styles = StyleSheet.create({
+  hdrTitle: {
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    fontWeight: 700,
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  welcome: {
+    textAlign: 'center',
+    fontSize: 30,
+  },
+  card: {
+    padding: 10,
+    margin: 10,
+  },
   clk: {
-    margin: 40,
-    color: 'black',
-    backgroundColor: Colors.black,
+    margin: 20,
+    color: Colors.black,
+    backgroundColor: Colors.grayBlue,
     fontSize: 30,
     borderRadius: 10,
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
   clockTime: {
     fontSize: 30,
     fontWeight: '800',
-    color: Colors.white,
-  },
-  borderBottom: {
-    borderBottomColor: 'white',
-    borderBottomWidth: 1,
+    color: Colors.black,
   },
   symb: {
     flexDirection: 'row',
@@ -75,9 +99,12 @@ const styels = StyleSheet.create({
   },
   icon: {
     marginEnd: 10,
+    backgroundColor: Colors.grayBlue,
+    color: Colors.black,
+    fontSize: 20,
   },
   ictxt: {
-    color: 'white',
+    color: Colors.black,
     fontSize: 13,
   },
   clkIn: {
@@ -85,7 +112,7 @@ const styels = StyleSheet.create({
     marginVertical: 10,
   },
   clkIn1: {
-    backgroundColor: Colors.darkGrayBlue,
+    backgroundColor: Colors.white,
     alignSelf: 'stretch',
     flexDirection: 'column',
     width: '85%',
@@ -93,15 +120,21 @@ const styels = StyleSheet.create({
     padding: 10,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
-    color: 'black',
+    color: Colors.black,
     marginEnd: 2,
   },
   clkIn2: {
-    backgroundColor: Colors.aquaBlue,
+    backgroundColor: Colors.white,
+    fontWeight: 'bold',
     padding: 10,
-    width: '15%',
     borderTopRightRadius: 10,
     borderBottomEndRadius: 10,
+    color: Colors.white,
+    icon: {
+      backgroundColor: Colors.white,
+      color: Colors.black,
+      fontSize: 80,
+    },
   },
 });
 
