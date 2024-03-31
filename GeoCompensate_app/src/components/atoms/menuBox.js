@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import {
   Menu,
   Divider,
@@ -60,7 +60,19 @@ const MenuBox = () => {
                 <Menu.Item
                   key={item.key}
                   style={styles.menuItem}
-                  onPress={() => {}}
+                  onPress={() => {
+                    return Alert.alert(
+                      'Relieve Employee',
+                      'Are you sure you want to relieve employee?',
+                      [
+                        {
+                          text: 'Cancel',
+                          onPress: () => {},
+                        },
+                        {text: 'Relieve', onPress: () => {}},
+                      ],
+                    );
+                  }}
                   title={item.name}
                 />
               ))}

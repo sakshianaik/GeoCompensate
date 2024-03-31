@@ -15,7 +15,12 @@ const Login = ({navigation}) => {
     AsyncStorage.getItem('user')
       .then(value => {
         if (value?.length > 0) {
-          navigation.navigate('Home');
+          let data = JSON.parse(value);
+          if (data?.type && data.type == 'HR') {
+            navigation.navigate('HRHome');
+          } else {
+            navigation.navigate('Home');
+          }
         }
       })
       .catch(error => console.error('AsyncStorage error: ', error));
@@ -38,11 +43,15 @@ const Login = ({navigation}) => {
     const data = await authneticateUser(dataToSend);
     const access_token = data?.access_token;
     if (access_token) {
-      saveUser('user', access_token);
+      saveUser('user', JSON.stringify(data));
       setErrorMsg(null);
       setEmail(null);
       setPassword(null);
-      navigation.navigate('Home');
+      if (data.type && data.type == 'HR') {
+        navigation.navigate('HRHome');
+      } else {
+        navigation.navigate('Home');
+      }
     } else {
       setErrorMsg('Invalid credentials. Try again!');
     }

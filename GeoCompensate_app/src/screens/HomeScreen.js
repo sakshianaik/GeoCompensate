@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Profile from './Profile';
 import More from './More';
 import SearchEmployee from './SearchEmployee';
-import HRDashboard from './HRDashboard';
 
 const HomeRoute = navigation => <Dashboard navigation={navigation} />;
 
@@ -14,8 +13,6 @@ const TimesheetRoute = () => <Text>Timesheet</Text>;
 const ProfileRoute = () => <Profile />;
 
 const MoreRoute = navigation => <More navigation={navigation} />;
-
-const HRDashboardRoute = navigation => <HRDashboard navigation={navigation} />;
 
 const SearchEmployeeRoute = navigation => (
   <SearchEmployee navigation={navigation} />
@@ -63,9 +60,6 @@ const HomeScreen = ({navigation}) => {
   const renderScene = BottomNavigation.SceneMap({
     home: () => {
       return HomeRoute(navigation);
-    },
-    hRDashboard: () => {
-      return HRDashboardRoute(navigation);
     },
     timsheet: TimesheetRoute,
     profile: ProfileRoute,

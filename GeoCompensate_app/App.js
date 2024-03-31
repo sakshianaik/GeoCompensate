@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from './src/screens/Login';
 import SearchEmployee from './src/screens/SearchEmployee';
+import HRDashboard from './src/screens/HRDashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,15 @@ function MyStack() {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
+        options={{
+          header: () => {
+            return null;
+          },
+        }}
+      />
+      <Stack.Screen
+        name="HRHome"
+        component={HRDashboard}
         options={{
           header: () => {
             return null;
