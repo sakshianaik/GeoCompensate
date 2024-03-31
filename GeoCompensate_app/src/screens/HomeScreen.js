@@ -2,8 +2,10 @@ import React, {useEffect} from 'react';
 import {BottomNavigation, Text} from 'react-native-paper';
 import Dashboard from './Dashboard';
 import EmployeeRegister from './EmployeeRegister'
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Profile from './Profile';
+import More from './More';
+import SearchEmployee from './SearchEmployee';
 
 const HomeRoute = navigation => <Dashboard navigation={navigation} />;
 
@@ -12,8 +14,11 @@ const TimesheetRoute = () => <Text>Timesheet</Text>;
 
 const ProfileRoute = () => <Profile />;
 
-const MoreRoute = navigation => <EmployeeRegister navigation={navigation} />;
-// const MoreRoute = () => <Text>More</Text>;
+const MoreRoute = navigation => <More navigation={navigation} />;
+
+const SearchEmployeeRoute = navigation => (
+  <SearchEmployee navigation={navigation} />
+);
 
 const HomeScreen = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
@@ -44,26 +49,28 @@ const HomeScreen = ({navigation}) => {
     },
   ]);
 
-  // useEffect(() => {
-  //   AsyncStorage.getItem('user')
-  //     .then(value => {
-  //       if (value == null) {
-  //         navigation.navigate('Login');
-  //       }
-  //     })
-  //     .catch(error => console.error('AsyncStorage error: ', error));
-  // }, [navigation]);
+  useEffect(() => {
+    AsyncStorage.getItem('user')
+      .then(value => {
+        if (value == null) {
+          navigation.navigate('Login');
+        }
+      })
+      .catch(error => console.error('AsyncStorage error: ', error));
+  }, [navigation]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: () => {
       return HomeRoute(navigation);
     },
+    timsheet: TimesheetRoute,
+    profile: ProfileRoute,
     more: () => {
       return MoreRoute(navigation);
     },
-    timsheet: TimesheetRoute,
-    profile: ProfileRoute,
-    // more: MoreRoute,
+    searchEmployeeRoute: () => {
+      return SearchEmployeeRoute(navigation);
+    },
   });
 
   return (
