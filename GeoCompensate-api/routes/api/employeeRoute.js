@@ -4,5 +4,6 @@ const EmployeeController = require('../../controllers/employee/employeeControlle
 var router = express.Router();
 
 router.post('/register', EmployeeController.registerEmployee);
+router.get('/:searchQuery', EmployeeController.fetchEmployees);
 
 module.exports = router;

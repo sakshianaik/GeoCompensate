@@ -1,9 +1,9 @@
 import {httpClient} from '../utils/http';
 
-export const authneticateUser = async data => {
+export const fetchEmployee = async searchQuery => {
   let response;
   try {
-    response = await httpClient.post('/login', data);
+    response = await httpClient.get(`/employee/${searchQuery}`);
   } catch (error) {
     console.error('Error sending data:', JSON.stringify(error));
   }
