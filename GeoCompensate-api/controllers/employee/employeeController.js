@@ -1,4 +1,4 @@
-const { getEmployeeId, saveEmployee } = require("../../services/employee/employeeService");
+const { getEmployeeId, saveEmployee, getEmployees } = require("../../services/employee/employeeService");
 
 class EmployeeController {
     static async registerEmployee(req, res) {
@@ -15,6 +15,24 @@ class EmployeeController {
                 type: "success",
                 message: "Success result",
                 data: emp,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                type: "error",
+                message: error.message || "Unhandled Error",
+                error,
+            });
+        }
+    }
+
+    static async fetchEmployees(req, res) {
+        try {
+            const payload = req.params.searchQuery;
+            let empList = await getEmployees(payload);
+            return res.status(200).json({
+                type: "success",
+                message: "Success result",
+                data: empList,
             });
         } catch (error) {
             return res.status(500).json({
