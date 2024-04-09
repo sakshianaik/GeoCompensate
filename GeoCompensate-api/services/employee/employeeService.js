@@ -34,3 +34,16 @@ exports.saveEmployee = (data) => {
     }
     return result;
 }
+
+exports.getEmployees = (searchQuery) => {
+    let result;
+    try {
+        let matchQuery = {
+            name: { $regex: "^" + searchQuery, $options: "i" }
+        };
+        result = Employee.find(matchQuery).lean();
+    } catch (error) {
+        return Promise.reject(error);
+    }
+    return result;
+}
