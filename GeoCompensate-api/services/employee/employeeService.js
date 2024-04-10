@@ -1,6 +1,4 @@
 const { Employee, EmployeeId } = require("../../models");
-
-
 exports.checkCredentials = (data) => {
     let result;
     try {
@@ -44,6 +42,33 @@ exports.getEmployees = (searchQuery) => {
         result = Employee.find(matchQuery).lean();
     } catch (error) {
         return Promise.reject(error);
+    }
+    return result;
+}
+
+exports.getOneEmpData =
+(empId) => {
+    let result;
+    try{
+        let matchQuery = {
+            employeeId : empId
+        }
+        result = Employee.findOne(matchQuery);
+    } catch(error){
+        return Promise.reject(error);
+    }
+    return result;
+}
+
+exports.deleteEmployee = (empId) =>{
+    let result;
+    try{
+        let matchQuery = {
+            employeeId : empId
+        }
+        result = Employee.deleteOne(matchQuery);
+    } catch(err){
+        return Promise.reject(err);
     }
     return result;
 }
