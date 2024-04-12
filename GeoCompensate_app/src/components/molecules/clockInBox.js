@@ -1,15 +1,168 @@
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Avatar, Card, Text} from 'react-native-paper';
+import React, {useState, useEffect} from 'react';
+import {Alert, StyleSheet, View} from 'react-native';
+import {Avatar, Card, Text, Button} from 'react-native-paper';
 import Clock from 'react-live-clock';
 import {Colors} from '../../assets/themes';
+import Geolocation from '@react-native-community/geolocation';
+import {fetchCompany} from '../../services/company';
+import {checkClockedIn} from '../../services/timesheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ClockInBox = () => {
+const ClockInBox = ({navigation}) => {
+  const [clockedIn, setClockedIn] = useState(0);
+  const [intervalId, setIntervalId] = useState(0);
+  const [companyLocation, setCompanyLocation] = useState(null);
+  const [user, setUser] = useState();
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in kilometers
+    return distance;
+  };
+
+  const checkLocation = (lat1, lon1) => {
+    let result = false;
+    if (lat1 && lon1) {
+      const distance = calculateDistance(
+        lat1,
+        lon1,
+        companyLocation?.latitude,
+        companyLocation?.longitude,
+      );
+
+      const thresholdDistance = 0.1; // in kilometers
+      if (distance <= thresholdDistance) {
+        result = true;
+      }
+    }
+    return result;
+  };
+
+  // Get the current location
+  const getCurrentLocation = () => {
+    let result = false;
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          console.log(latitude, longitude, companyLocation);
+          result = checkLocation(latitude, longitude);
+          resolve(result);
+        },
+        error => {
+          console.error(error.message);
+          reject(error);
+        },
+        {enableHighAccuracy: true},
+      );
+    });
+  };
+
+  const checkClockIn = async () => {
+    // const data = {
+    //   employeeId: user.employeeId,
+    //   date: Date.now(),
+    // };
+    // const result = await checkClockedIn(data);
+    // return result;
+    return false;
+  };
+
+  const pingLocation = () => {
+    getCurrentLocation().then(result => {
+      if (result) {
+        //API call to update clock-out time.
+        console.log('Ping: Employee is inside the company.');
+      } else {
+        // API call to clock-out as user was outside location.
+        console.log('Ping: Employee is outside the company.');
+        setClockedIn(0);
+        clearInterval(intervalId);
+      }
+    });
+  };
+
+  const validateClockIn = async () => {
+    const isClockedIn = await checkClockIn();
+    if (isClockedIn) {
+      setClockedIn(1);
+      getCurrentLocation().then(result => {
+        if (result) {
+          const id = setInterval(pingLocation, 15000);
+          setIntervalId(id);
+        }
+      });
+    }
+  };
+
+  const onClockClick = () => {
+    if (clockedIn == 0) {
+      getCurrentLocation().then(result => {
+        if (result) {
+          //API call for clock in
+          setClockedIn(1);
+          const id = setInterval(pingLocation, 15000);
+          setIntervalId(id);
+          Alert.alert('Success', 'You are successfully clocked in.');
+        } else {
+          Alert.alert('Attention', 'You are out of company location.');
+        }
+      });
+    } else {
+      getCurrentLocation().then(result => {
+        if (result) {
+          //API call for clock out
+          setClockedIn(0);
+          console.log('Interval ID: ' + intervalId);
+          clearInterval(intervalId);
+          Alert.alert('Success', 'You are successfully clocked out.');
+        } else {
+          Alert.alert('Attention', 'You are out of company location.');
+        }
+      });
+    }
+  };
+
+  const getCompanyLocation = () => {
+    fetchCompany('6611bb23eb62f58db5dd82fe').then(data => {
+      setCompanyLocation({
+        latitude: data.companyLocation[0],
+        longitude: data.companyLocation[1],
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (user == null || companyLocation == null) {
+      AsyncStorage.getItem('user')
+        .then(value => {
+          if (value == null) {
+            navigation.navigate('Login');
+          } else {
+            setUser(value);
+            getCompanyLocation();
+          }
+        })
+        .catch(error => console.error('AsyncStorage error: ', error));
+    } else {
+      validateClockIn();
+    }
+  }, [companyLocation,user]);
+
   return (
     <>
       <Text style={styles.hdrTitle}>Home</Text>
       <View>
-        <Text style={styles.welcome}>Welcome, Nandish!</Text>
+        <Text style={styles.welcome}>Welcome, {user?.firstName}!</Text>
       </View>
       <Card style={styles.card} elevation={0}>
         <Card.Content style={styles.clk}>
@@ -26,7 +179,7 @@ const ClockInBox = () => {
             <View style={styles.iconCont}>
               <Avatar.Icon size={30} style={styles.icon} icon="clock" />
               <Text style={styles.ictxt} variant="labelSmall">
-                Clocked Out
+                {clockedIn == 0 ? 'Clocked out' : 'Clocked in'}
               </Text>
             </View>
             <View style={styles.iconCont}>
@@ -38,16 +191,11 @@ const ClockInBox = () => {
           </View>
           <View style={styles.borderBottom} />
           <View style={styles.clkIn}>
-            <Text style={styles.clkIn1} variant="titleMedium">
-              Clock In
-            </Text>
-            <View style={styles.clkIn2}>
-              <Avatar.Icon
-                style={styles.clkIn2.icon}
-                size={30}
-                icon="dots-horizontal"
-              />
-            </View>
+            <Button style={styles.clkIn1} onPress={onClockClick}>
+              <Text variant="titleMedium">
+                {clockedIn == 0 ? 'Clock in' : 'Clock out'}
+              </Text>
+            </Button>
           </View>
         </Card.Content>
       </Card>
@@ -115,11 +263,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     alignSelf: 'stretch',
     flexDirection: 'column',
-    width: '85%',
+    width: '100%',
     textAlign: 'center',
     padding: 10,
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
+    borderRadius: 10,
     color: Colors.black,
     marginEnd: 2,
   },
