@@ -10,7 +10,7 @@ const Dashboard = ({navigation}) => {
     <>
       <View style={styles.container}>
         <Header navigation={navigation} />
-        <ClockInBox />
+        <ClockInBox navigation={navigation} />
         <TimingItems />
       </View>
     </>
