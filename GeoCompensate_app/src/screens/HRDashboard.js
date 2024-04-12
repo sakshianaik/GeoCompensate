@@ -8,6 +8,11 @@ const HRDashboard = ({navigation}) => {
   const handleSearchEmployee = () => {
     navigation.navigate('Search Employee');
   };
+
+  const handleRegisterEmployee = () => {
+    navigation.navigate('Register Employee');
+  };
+
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
@@ -21,10 +26,12 @@ const HRDashboard = ({navigation}) => {
           <Text style={styles.searchButton.searchText}>Search Employee</Text>
         </Button>
         <Button
-          style={styles.editButton}
+          style={styles.registerButton}
           mode="contained"
-          onPress={handleSearchEmployee}>
-          <Text style={styles.searchButton.searchText}>Edit Employee</Text>
+          onPress={handleRegisterEmployee}>
+          <Text style={styles.searchButton.searchText}>
+            Register New Employee
+          </Text>
         </Button>
       </View>
     </View>
@@ -62,8 +69,17 @@ const styles = StyleSheet.create({
       fontWeight: 900,
     },
   },
-  editButton: {
+  registerButton: {
     backgroundColor: Colors.lavender,
+    marginVertical: 20,
+    padding: 10,
+    searchText: {
+      color: Colors.black,
+      fontWeight: 900,
+    },
+  },
+  editButton: {
+    backgroundColor: Colors.grayBlue,
     marginVertical: 20,
     padding: 10,
     searchText: {
