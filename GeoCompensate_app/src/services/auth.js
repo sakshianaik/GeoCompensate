@@ -22,3 +22,17 @@ export const registerEmployee = async data => {
   }
   return response?.data?.data;
 };
+
+export const updateEmpProfile = async data => {
+  let response;
+  console.log("employee controller" , data)
+  try {
+    response = await axios.put(
+      'http://10.0.2.2:3001/api/v1/employee/profile',
+      data,
+    );
+  } catch (error) {
+    console.error('Error sending data:', JSON.stringify(error));
+  }
+  return response?.data?.data;
+};

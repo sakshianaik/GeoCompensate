@@ -2,10 +2,9 @@ import React, {useEffect} from 'react';
 import {BottomNavigation, Text} from 'react-native-paper';
 import Dashboard from './Dashboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Profile from './Profile';
 import More from './More';
 import SearchEmployee from './SearchEmployee';
-import RegisterEmployee from './RegisterEmployee';
+import Profile from './Profile';
 import HRDashboard from './HRDashboard';
 
 const HomeRoute = navigation => <Dashboard navigation={navigation} />;
@@ -14,7 +13,9 @@ const HRHomeRoute = navigation => <HRDashboard navigation={navigation} />;
 
 const TimesheetRoute = () => <Text>Timesheet</Text>;
 
-const ProfileRoute = () => <Profile />;
+const ProfileRoute = navigation => <Profile navigation={navigation}/>
+
+
 
 const MoreRoute = navigation => <More navigation={navigation} />;
 
@@ -72,8 +73,11 @@ const HomeScreen = ({navigation}) => {
     hRHomeRoute: () => {
       return HRHomeRoute(navigation);
     },
+    profile: () => {
+      return ProfileRoute(navigation);
+    },
     timsheet: TimesheetRoute,
-    profile: ProfileRoute,
+    
     more: () => {
       return MoreRoute(navigation);
     },
