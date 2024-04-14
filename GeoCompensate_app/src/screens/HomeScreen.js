@@ -5,8 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Profile from './Profile';
 import More from './More';
 import SearchEmployee from './SearchEmployee';
+import RegisterEmployee from './RegisterEmployee';
+import HRDashboard from './HRDashboard';
 
 const HomeRoute = navigation => <Dashboard navigation={navigation} />;
+
+const HRHomeRoute = navigation => <HRDashboard navigation={navigation} />;
 
 const TimesheetRoute = () => <Text>Timesheet</Text>;
 
@@ -16,6 +20,10 @@ const MoreRoute = navigation => <More navigation={navigation} />;
 
 const SearchEmployeeRoute = navigation => (
   <SearchEmployee navigation={navigation} />
+);
+
+const RegisterEmployeeRoute = navigation => (
+  <RegisterEmployee navigation={navigation} />
 );
 
 const HomeScreen = ({navigation}) => {
@@ -61,6 +69,9 @@ const HomeScreen = ({navigation}) => {
     home: () => {
       return HomeRoute(navigation);
     },
+    hRHomeRoute: () => {
+      return HRHomeRoute(navigation);
+    },
     timsheet: TimesheetRoute,
     profile: ProfileRoute,
     more: () => {
@@ -68,6 +79,9 @@ const HomeScreen = ({navigation}) => {
     },
     searchEmployeeRoute: () => {
       return SearchEmployeeRoute(navigation);
+    },
+    registerEmployee: () => {
+      return RegisterEmployeeRoute(navigation);
     },
   });
 
