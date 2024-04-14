@@ -8,7 +8,7 @@ exports.checkClockedIn = (data) => {
             date: data.date,
             clockedOut: data.clockedOut
         };
-        result = Timesheet.findOne(matchQuery).lean();
+        result = Timesheet.findOne(matchQuery);
     } catch (error) {
         return Promise.reject(error);
     }
