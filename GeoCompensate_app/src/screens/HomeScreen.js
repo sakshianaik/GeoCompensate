@@ -1,30 +1,20 @@
 import React, {useEffect} from 'react';
-import {BottomNavigation, Text} from 'react-native-paper';
+import {BottomNavigation} from 'react-native-paper';
 import Dashboard from './Dashboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Profile from './Profile';
-import More from './More';
-import SearchEmployee from './SearchEmployee';
-import RegisterEmployee from './RegisterEmployee';
 import HRDashboard from './HRDashboard';
+import EmployeeViewTimesheet from './EmployeeViewTimesheet';
 
 const HomeRoute = navigation => <Dashboard navigation={navigation} />;
 
 const HRHomeRoute = navigation => <HRDashboard navigation={navigation} />;
 
-const TimesheetRoute = () => <Text>Timesheet</Text>;
-
-const ProfileRoute = () => <Profile />;
-
-const MoreRoute = navigation => <More navigation={navigation} />;
-
-const SearchEmployeeRoute = navigation => (
-  <SearchEmployee navigation={navigation} />
+const TimesheetRoute = navigation => (
+  <EmployeeViewTimesheet navigation={navigation} />
 );
 
-const RegisterEmployeeRoute = navigation => (
-  <RegisterEmployee navigation={navigation} />
-);
+const ProfileRoute = navigation => <Profile />;
 
 const HomeScreen = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
@@ -36,7 +26,7 @@ const HomeScreen = ({navigation}) => {
       unfocusedIcon: 'home-outline',
     },
     {
-      key: 'timsheet',
+      key: 'timesheet',
       title: 'Timsheet',
       focusedIcon: 'clock-time-three',
       unfocusedIcon: 'clock-time-three-outline',
@@ -46,12 +36,6 @@ const HomeScreen = ({navigation}) => {
       title: 'Profile',
       focusedIcon: 'account',
       unfocusedIcon: 'account-outline',
-    },
-    {
-      key: 'more',
-      title: 'More',
-      focusedIcon: 'more',
-      unfocusedIcon: 'more',
     },
   ]);
 
@@ -72,16 +56,11 @@ const HomeScreen = ({navigation}) => {
     hRHomeRoute: () => {
       return HRHomeRoute(navigation);
     },
-    timsheet: TimesheetRoute,
-    profile: ProfileRoute,
-    more: () => {
-      return MoreRoute(navigation);
+    timesheet: () => {
+      return TimesheetRoute(navigation);
     },
-    searchEmployeeRoute: () => {
-      return SearchEmployeeRoute(navigation);
-    },
-    registerEmployee: () => {
-      return RegisterEmployeeRoute(navigation);
+    profile: () => {
+      return ProfileRoute(navigation);
     },
   });
 
