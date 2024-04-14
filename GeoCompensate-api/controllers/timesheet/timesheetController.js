@@ -6,7 +6,7 @@ class TimesheetController {
         try {
             const payload = req.body;
             const data = {
-                employeeId: payload.empId,
+                employeeId: payload.employeeId,
                 date: payload.date,
                 clockedOut: false
             }
@@ -83,7 +83,7 @@ class TimesheetController {
         try {
             const payload = req.body;
             const data = {
-                employeeId: payload.empId,
+                employeeId: payload.employeeId,
                 date: payload.date,
                 clockedOut: false
             }
@@ -103,7 +103,6 @@ class TimesheetController {
             });
         }
     }
-}
 }
 
 module.exports = TimesheetController;

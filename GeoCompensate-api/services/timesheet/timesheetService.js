@@ -4,7 +4,7 @@ exports.checkClockedIn = (data) => {
     let result;
     try {
         let matchQuery = {
-            employeeId: data.empId,
+            employeeId: data.employeeId,
             date: data.date,
             clockedOut: data.clockedOut
         };

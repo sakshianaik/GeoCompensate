@@ -179,8 +179,8 @@ const ClockInBox = ({navigation}) => {
     }
   };
 
-  const getCompanyLocation = () => {
-    fetchCompany('6611bb23eb62f58db5dd82fe').then(data => {
+  const getCompanyLocation = async () => {
+    return fetchCompany('6611bb23eb62f58db5dd82fe').then(data => {
       setCompanyLocation({
         latitude: data.companyLocation[0],
         longitude: data.companyLocation[1],
@@ -191,19 +191,19 @@ const ClockInBox = ({navigation}) => {
   useEffect(() => {
     if (user == null || companyLocation == null) {
       AsyncStorage.getItem('user')
-        .then(value => {
+        .then(async value => {
           if (value == null) {
             navigation.navigate('Login');
           } else {
             setUser(JSON.parse(value));
-            getCompanyLocation();
+            await getCompanyLocation();
           }
         })
         .catch(error => console.error('AsyncStorage error: ', error));
     } else {
       validateClockIn();
     }
-  }, [companyLocation, user]);
+  }, [companyLocation]);
 
   return (
     <>
