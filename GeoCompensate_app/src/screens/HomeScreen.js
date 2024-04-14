@@ -14,7 +14,7 @@ const TimesheetRoute = navigation => (
   <EmployeeViewTimesheet navigation={navigation} />
 );
 
-const ProfileRoute = navigation => <Profile />;
+const ProfileRoute = navigation => <Profile navigation={navigation} />;
 
 const HomeScreen = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
