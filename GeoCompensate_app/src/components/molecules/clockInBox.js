@@ -5,13 +5,20 @@ import Clock from 'react-live-clock';
 import {Colors} from '../../assets/themes';
 import Geolocation from '@react-native-community/geolocation';
 import {fetchCompany} from '../../services/company';
-import {checkClockedIn} from '../../services/timesheet';
+import {
+  checkClockedIn,
+  clockIn,
+  clockOut,
+  pingUserLocation,
+} from '../../services/timesheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {format} from 'date-fns';
 
 const ClockInBox = ({navigation}) => {
   const [clockedIn, setClockedIn] = useState(0);
   const [intervalId, setIntervalId] = useState(0);
   const [companyLocation, setCompanyLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const [user, setUser] = useState();
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -54,6 +61,7 @@ const ClockInBox = ({navigation}) => {
       Geolocation.getCurrentPosition(
         position => {
           const {latitude, longitude} = position.coords;
+          setUserLocation({latitude, longitude});
           console.log(latitude, longitude, companyLocation);
           result = checkLocation(latitude, longitude);
           resolve(result);
@@ -68,25 +76,41 @@ const ClockInBox = ({navigation}) => {
   };
 
   const checkClockIn = async () => {
-    // const data = {
-    //   employeeId: user.employeeId,
-    //   date: Date.now(),
-    // };
-    // const result = await checkClockedIn(data);
-    // return result;
-    return false;
+    const data = {
+      employeeId: user.employeeId,
+      date: format(new Date(), 'yyyy-MM-dd'),
+    };
+    const result = await checkClockedIn(data);
+    return result;
+    // return false;
   };
 
   const pingLocation = () => {
     getCurrentLocation().then(result => {
       if (result) {
         //API call to update clock-out time.
-        console.log('Ping: Employee is inside the company.');
+        let payload = {
+          employeeId: user?.employeeId,
+          date: format(new Date(), 'yyyy-MM-dd'),
+          clockOut: new Date().toISOString(),
+        };
+        pingUserLocation(payload).then(res => {
+          console.log('Ping: Employee is inside the company.');
+        });
       } else {
-        // API call to clock-out as user was outside location.
         console.log('Ping: Employee is outside the company.');
-        setClockedIn(0);
-        clearInterval(intervalId);
+        // API call to clock-out as user was outside location.
+        let payload = {
+          employeeId: user?.employeeId,
+          date: format(new Date(), 'yyyy-MM-dd'),
+          clockOut: new Date().toISOString(),
+        };
+        clockOut(payload).then(res => {
+          setClockedIn(0);
+          console.log('Interval ID: ' + intervalId);
+          clearInterval(intervalId);
+          Alert.alert('Success', 'You are successfully clocked out.');
+        });
       }
     });
   };
@@ -95,10 +119,23 @@ const ClockInBox = ({navigation}) => {
     const isClockedIn = await checkClockIn();
     if (isClockedIn) {
       setClockedIn(1);
-      getCurrentLocation().then(result => {
+      getCurrentLocation().then(async result => {
         if (result) {
           const id = setInterval(pingLocation, 15000);
           setIntervalId(id);
+        } else {
+          //API call for clock out
+          let payload = {
+            employeeId: user?.employeeId,
+            date: format(new Date(), 'yyyy-MM-dd'),
+            clockOut: new Date().toISOString(),
+          };
+          clockOut(payload).then(res => {
+            setClockedIn(0);
+            console.log('Interval ID: ' + intervalId);
+            clearInterval(intervalId);
+            Alert.alert('Success', 'You are successfully clocked out.');
+          });
         }
       });
     }
@@ -106,34 +143,44 @@ const ClockInBox = ({navigation}) => {
 
   const onClockClick = () => {
     if (clockedIn == 0) {
-      getCurrentLocation().then(result => {
+      getCurrentLocation().then(async result => {
         if (result) {
           //API call for clock in
-          setClockedIn(1);
-          const id = setInterval(pingLocation, 15000);
-          setIntervalId(id);
-          Alert.alert('Success', 'You are successfully clocked in.');
+          let payload = {
+            employeeId: user?.employeeId,
+            date: format(new Date(), 'yyyy-MM-dd'),
+            clockIn: new Date().toISOString(),
+            clockOut: new Date().toISOString(),
+            clockedLocation: [userLocation?.latitude, userLocation?.longitude],
+          };
+          clockIn(payload).then(res => {
+            setClockedIn(1);
+            const id = setInterval(pingLocation, 15000);
+            setIntervalId(id);
+            Alert.alert('Success', 'You are successfully clocked in.');
+          });
         } else {
           Alert.alert('Attention', 'You are out of company location.');
         }
       });
     } else {
-      getCurrentLocation().then(result => {
-        if (result) {
-          //API call for clock out
-          setClockedIn(0);
-          console.log('Interval ID: ' + intervalId);
-          clearInterval(intervalId);
-          Alert.alert('Success', 'You are successfully clocked out.');
-        } else {
-          Alert.alert('Attention', 'You are out of company location.');
-        }
+      //API call for clock out
+      let payload = {
+        employeeId: user?.employeeId,
+        date: format(new Date(), 'yyyy-MM-dd'),
+        clockOut: new Date().toISOString(),
+      };
+      clockOut(payload).then(res => {
+        setClockedIn(0);
+        console.log('Interval ID: ' + intervalId);
+        clearInterval(intervalId);
+        Alert.alert('Success', 'You are successfully clocked out.');
       });
     }
   };
 
-  const getCompanyLocation = () => {
-    fetchCompany('6611bb23eb62f58db5dd82fe').then(data => {
+  const getCompanyLocation = async () => {
+    return fetchCompany('6611bb23eb62f58db5dd82fe').then(data => {
       setCompanyLocation({
         latitude: data.companyLocation[0],
         longitude: data.companyLocation[1],
@@ -144,19 +191,19 @@ const ClockInBox = ({navigation}) => {
   useEffect(() => {
     if (user == null || companyLocation == null) {
       AsyncStorage.getItem('user')
-        .then(value => {
+        .then(async value => {
           if (value == null) {
             navigation.navigate('Login');
           } else {
-            setUser(value);
-            getCompanyLocation();
+            setUser(JSON.parse(value));
+            await getCompanyLocation();
           }
         })
         .catch(error => console.error('AsyncStorage error: ', error));
     } else {
       validateClockIn();
     }
-  }, [companyLocation,user]);
+  }, [companyLocation]);
 
   return (
     <>

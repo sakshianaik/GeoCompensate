@@ -3,7 +3,7 @@ const { CLOCK_TYPE } = require("../../utils/enums");
 const { Schema, model } = mongoose;
 
 const timesheetSchema = new Schema({
-    employeeId: { type: Schema.Types.ObjectId, ref: "Employee", require: true },
+    employeeId: { type: Schema.Types.String, require: true },
     date: { type: Date, default: Date.now },
     clockIn: { type: Date, default: Date.now },
     clockOut: { type: Date, default: Date.now },
