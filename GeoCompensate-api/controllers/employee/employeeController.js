@@ -65,15 +65,15 @@ class EmployeeController {
     static async updateEmpProfile(req,res){
         try{
             const payload = req.body;
+            console.log("payload controller",payload)
             let empData = await getOneEmpData(payload.employeeId);
-            
             empData.firstName = payload.firstName;
             empData.lastName = payload.lastName;
             empData.name = payload.name;
             empData.email = payload.email;
             empData.phone = payload.phone;
             
-            if(payload.isHR){
+            if(payload.isHR){  
                 empData.ssn = payload.ssn;
                 empData.departmentId = payload.departmentId;  
                 empData.hourlyPay = payload.hourlyPay;   
