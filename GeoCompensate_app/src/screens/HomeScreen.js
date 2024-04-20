@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {BottomNavigation} from 'react-native-paper';
 import Dashboard from './Dashboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import editProfile from './editProfile';
+import EditProfile from './EditProfile';
 import HRDashboard from './HRDashboard';
 import EmployeeViewTimesheet from './EmployeeViewTimesheet';
 
@@ -15,7 +15,7 @@ const TimesheetRoute = navigation => (
 );
 
 const ProfileRoute = (navigation, empID) => (
-  <editProfile navigation={navigation} employeeId={empID} />
+  <EditProfile navigation={navigation} employeeId={empID} />
 );
 
 const HomeScreen = ({navigation}) => {

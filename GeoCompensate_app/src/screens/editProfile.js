@@ -22,7 +22,6 @@ const EditProfile = ({navigation, employeeId}) => {
   const [saveChangesBtn, setSaveChnagesBtn] = useState(false);
 
   useEffect(() => {
-    console.log(employeeId);
     setEmpID(employeeId);
     fetchEmployeeWithID(employeeId).then(empData => {
       setfirstName(empData?.firstName);
@@ -76,13 +75,6 @@ const EditProfile = ({navigation, employeeId}) => {
       isHR: false,
     };
     const data = await updateEmpProfile(dataToSend);
-    console.log(data);
-
-    //if (!firstName && !lastName && !email && !phone && !ssn) {
-    //setErrorMsg('All fields are mandatory');
-    //} else {
-
-    //}
   };
 
   const [value, setValue] = useState(departmentDetails[0].departmentName);
