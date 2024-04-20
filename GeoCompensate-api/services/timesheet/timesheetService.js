@@ -4,11 +4,11 @@ exports.checkClockedIn = (data) => {
     let result;
     try {
         let matchQuery = {
-            employeeId: data.empId,
+            employeeId: data.employeeId,
             date: data.date,
             clockedOut: data.clockedOut
         };
-        result = Timesheet.findOne(matchQuery).lean();
+        result = Timesheet.findOne(matchQuery);
     } catch (error) {
         return Promise.reject(error);
     }

@@ -6,7 +6,7 @@ class TimesheetController {
         try {
             const payload = req.body;
             const data = {
-                employeeId: payload.empId,
+                employeeId: payload.employeeId,
                 date: payload.date,
                 clockedOut: false
             }
@@ -29,7 +29,7 @@ class TimesheetController {
         try {
             const payload = req.body;
             const data = {
-                employeeId: payload.empId,
+                employeeId: payload.employeeId,
                 date: payload.date,
                 clockIn: payload.clockIn,
                 clockOut: payload.clockOut,
@@ -57,11 +57,39 @@ class TimesheetController {
         try {
             const payload = req.body;
             const data = {
-                employeeId: payload.empId,
+                employeeId: payload.employeeId,
                 date: payload.date,
                 clockedOut: false
             }
             const response = await checkClockedIn(data);
+            response.clockedOut = true;
+            response.clockOut = payload.clockOut;
+            response.save();
+            return res.status(200).json({
+                type: "success",
+                message: "Success result",
+                data: response,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                type: "error",
+                message: error.message || "Unhandled Error",
+                error,
+            });
+        }
+    }
+
+    static async pingLocation(req, res) {
+        try {
+            const payload = req.body;
+            const data = {
+                employeeId: payload.employeeId,
+                date: payload.date,
+                clockedOut: false
+            }
+            const response = await checkClockedIn(data);
+            response.clockOut = payload.clockOut;
+            response.save();
             return res.status(200).json({
                 type: "success",
                 message: "Success result",
@@ -103,4 +131,5 @@ class TimesheetController {
         }
     }
 }
+
 module.exports = TimesheetController;
