@@ -27,7 +27,6 @@ exports.clockIn = (data) => {
 
 exports.getEmpTimesheet = (data) => {
     let result;
-    console.log(data);
     try {
         const pipeline = [
             {
@@ -58,7 +57,6 @@ exports.getEmpTimesheet = (data) => {
                 }
             }
         ]
-        console.log(pipeline);
         result = Timesheet.aggregate(pipeline)
         
     } catch (error) {
