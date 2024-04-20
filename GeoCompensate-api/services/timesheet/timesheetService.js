@@ -25,7 +25,7 @@ exports.clockIn = (data) => {
     return result;
 }
 
-exports.getTimesheet = (data) => {
+exports.getEmpTimesheet = (data) => {
     let result;
     try {
         const pipeline = [
@@ -33,7 +33,7 @@ exports.getTimesheet = (data) => {
                 $match: {
                     employeeId: data.employeeId,
                     clockedOut: true,
-                    date: { $gte: data.startOfMonth, $lte: data.endOfMonth}
+                    date: { $gte: data.startOfMonth, $lte: data.endOfMonth }
                 }
             },
             {
@@ -67,7 +67,7 @@ exports.getTimesheet = (data) => {
     return result;
 }
 
-exports.getEmpTimesheet = (data) => {
+exports.getTimesheet = (data) => {
     let result;
     try {
         const pipeline = [
@@ -100,7 +100,7 @@ exports.getEmpTimesheet = (data) => {
             }
         ]
         result = Timesheet.aggregate(pipeline)
-        
+
     } catch (error) {
         return Promise.reject(err);
     }
