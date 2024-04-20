@@ -27,8 +27,8 @@ const EditProfile = ({navigation, employeeId}) => {
       setfirstName(empData?.firstName);
       setlastName(empData?.lastName);
       setEmail(empData?.email);
-      setPhone(empData?.phone.toString());
-      setSsn(empData?.ssn.toString());
+      setPhone(empData?.phone?.toString());
+      setSsn(empData?.ssn?.toString());
     });
   }, [navigation]);
 
