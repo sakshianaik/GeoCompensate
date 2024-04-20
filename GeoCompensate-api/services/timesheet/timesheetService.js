@@ -25,7 +25,7 @@ exports.clockIn = (data) => {
     return result;
 }
 
-exports.getTimesheet = (data) => {
+exports.getEmpTimesheet = (data) => {
     let result;
     console.log(data);
     try {

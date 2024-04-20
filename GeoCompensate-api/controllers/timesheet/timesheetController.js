@@ -1,4 +1,4 @@
-const { checkClockedIn, clockIn, getTimesheet } = require("../../services/timesheet/timesheetService");
+const { checkClockedIn, clockIn, getEmpTimesheet } = require("../../services/timesheet/timesheetService");
 const { CLOCK_TYPE } = require("../../utils/enums");
 
 class TimesheetController {
@@ -107,7 +107,7 @@ class TimesheetController {
     static async fetchEmpTimesheet(req,res){
         try {
             const employeeId = req.params.empId;
-            let timesheet = await getTimesheet({employeeId});
+            let timesheet = await getEmpTimesheet({employeeId});
             return res.status(200).json({
                 type: "success",
                 message: "Success result of timesheet",
