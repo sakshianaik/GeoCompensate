@@ -12,6 +12,7 @@ const timesheetSchema = new Schema({
     clockLocation: { type: Schema.Types.Array, require: true },
     createdDate: { type: Date, default: Date.now },
     modifiedDate: { type: Date, default: Date.now },
+    hourlyPay: Schema.Types.Number,
 });
 
 module.exports = model("Timesheet", timesheetSchema);

@@ -1,4 +1,4 @@
-const { checkClockedIn, clockIn, getEmpTimesheet } = require("../../services/timesheet/timesheetService");
+const { checkClockedIn, clockIn, getTimesheet, getEmpTimesheet } = require("../../services/timesheet/timesheetService");
 const { CLOCK_TYPE } = require("../../utils/enums");
 
 class TimesheetController {
@@ -104,10 +104,37 @@ class TimesheetController {
         }
     }
 
-    static async fetchEmpTimesheet(req,res){
+    static async fetchEmpTimesheet(req, res) {
+        try {
+            const payload = req.params;
+            const currentDate = new Date();
+            const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            const data = {
+                employeeId: payload.empId,
+                startOfMonth: startOfMonth,
+                endOfMonth: endOfMonth,
+            }
+            const response = await getEmpTimesheet(data);
+            return res.status(200).json({
+                type: "success",
+                message: "Success result",
+                data: response,
+            });
+        }
+        catch (error) {
+            return res.status(500).json({
+                type: "error",
+                message: error.message || "Unhandled Error",
+                error,
+            });
+        }
+    }
+
+    static async fetchTimesheet(req,res){
         try {
             const employeeId = req.params.empId;
-            let timesheet = await getEmpTimesheet({employeeId});
+            let timesheet = await getTimesheet({employeeId});
             return res.status(200).json({
                 type: "success",
                 message: "Success result of timesheet",
