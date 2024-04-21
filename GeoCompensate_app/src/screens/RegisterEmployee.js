@@ -134,7 +134,6 @@ const RegisterEmployee = ({navigation}) => {
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            console.log(item);
             setValue(item.departmentName);
             setIsFocus(false);
           }}

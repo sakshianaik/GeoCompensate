@@ -39,3 +39,13 @@ export const pingUserLocation = async data => {
   }
   return response?.data?.data;
 };
+
+export const fetchHRViewTimesheet = async employeeId => {
+  let response;
+  try {
+    response = await httpClient.get(`/timesheet/hr/${employeeId}`);
+  } catch (error) {
+    console.error('Error sending data:', JSON.stringify(error));
+  }
+  return response?.data?.data;
+};
