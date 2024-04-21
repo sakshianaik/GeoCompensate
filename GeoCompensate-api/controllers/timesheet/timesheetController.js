@@ -116,7 +116,6 @@ class TimesheetController {
                 endOfMonth: endOfMonth,
             }
             const response = await getEmpTimesheet(data);
-            console.log('sortred', response);
             return res.status(200).json({
                 type: "success",
                 message: "Success result",
