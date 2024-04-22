@@ -2,8 +2,9 @@ import * as React from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import {Menu, Button, Avatar, PaperProvider} from 'react-native-paper';
 import {Colors} from '../../assets/themes';
+import {relieveEmployee} from '../../services/employee';
 
-const MenuBox = ({navigation, employeeId}) => {
+const MenuBox = ({navigation, employeeId, employees, setEmployees}) => {
   const [visible, setVisible] = React.useState(false);
   const [menuAnchor, setMenuAnchor] = React.useState({x: 0, y: 0});
   const openMenu = event => {
@@ -18,6 +19,14 @@ const MenuBox = ({navigation, employeeId}) => {
   };
   const closeMenu = event => {
     setVisible(false);
+  };
+
+  const removeEmployee = empId => {
+    relieveEmployee(empId);
+    const filteredEmployees = employees.filter(
+      item => item.employeeId !== empId,
+    );
+    setEmployees(filteredEmployees);
   };
 
   const items = [
@@ -50,7 +59,12 @@ const MenuBox = ({navigation, employeeId}) => {
               text: 'Cancel',
               onPress: () => {},
             },
-            {text: 'Relieve', onPress: () => {}},
+            {
+              text: 'Relieve',
+              onPress: () => {
+                removeEmployee(employeeId);
+              },
+            },
           ],
         );
       },

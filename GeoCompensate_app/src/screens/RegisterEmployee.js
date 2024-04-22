@@ -13,7 +13,6 @@ const RegisterEmployee = ({navigation}) => {
   const [ssn, setSsn] = useState('');
   const [companyId, setCompanyId] = useState('');
   const [hourlyPay, setHourlyPay] = useState('');
-
   const [errorMsg, setErrorMsg] = React.useState(null);
 
   const companyDetails = {
@@ -64,7 +63,12 @@ const RegisterEmployee = ({navigation}) => {
       type: type,
     };
     const data = await registerEmployee(dataToSend);
-    console.warn(data);
+    if (data !== null) {
+      navigation.navigate('HRHome');
+      setErrorMsg('');
+    } else {
+      setErrorMsg('Something went wrong');
+    }
   };
 
   const [value, setValue] = useState(departmentDetails[0].departmentName);
