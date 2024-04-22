@@ -9,6 +9,7 @@ class EmployeeController {
             id.save();
             payload.employeeId = id.employeeId;
             payload.password = Math.random().toString(36).slice(2);
+            payload.name = payload.firstName + ' ' +  payload.lastName;
             let emp = await saveEmployee(payload);
             emp.save();
             return res.status(200).json({
