@@ -41,7 +41,12 @@ const SearchEmployee = ({navigation}) => {
             <DataTable.Cell>{item.employeeId}</DataTable.Cell>
             <DataTable.Cell>{item.name}</DataTable.Cell>
             <DataTable.Cell style={styles.center}>
-              <MenuBox navigation={navigation} employeeId={item.employeeId} />
+              <MenuBox
+                navigation={navigation}
+                employeeId={item.employeeId}
+                employees={employees}
+                setEmployees={setEmployees}
+              />
             </DataTable.Cell>
           </DataTable.Row>
         ))}
