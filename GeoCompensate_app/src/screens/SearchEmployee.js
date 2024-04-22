@@ -1,11 +1,10 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {DataTable, Searchbar} from 'react-native-paper';
 import MenuBox from '../components/atoms/menuBox';
-import {Colors} from '../assets/themes';
 import {fetchEmployee} from '../services/employee';
 
-const SearchEmployee = () => {
+const SearchEmployee = ({navigation}) => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const [employees, setEmployees] = React.useState([]);
@@ -37,12 +36,12 @@ const SearchEmployee = () => {
           <DataTable.Title style={styles.center}>More</DataTable.Title>
         </DataTable.Header>
 
-        {employees.map((item, key) => (
+        {employees?.map((item, key) => (
           <DataTable.Row key={key}>
             <DataTable.Cell>{item.employeeId}</DataTable.Cell>
             <DataTable.Cell>{item.name}</DataTable.Cell>
             <DataTable.Cell style={styles.center}>
-              <MenuBox />
+              <MenuBox navigation={navigation} employeeId={item.employeeId} />
             </DataTable.Cell>
           </DataTable.Row>
         ))}

@@ -59,7 +59,7 @@ exports.getEmpTimesheet = (data) => {
                 }
             }
         ];
-        result = Timesheet.aggregate(pipeline);
+        result = Timesheet.aggregate(pipeline).sort({date: -1});
 
     } catch (error) {
         return Promise.reject(error);
