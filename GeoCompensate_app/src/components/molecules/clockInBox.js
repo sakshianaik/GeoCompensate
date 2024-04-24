@@ -14,12 +14,13 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {format} from 'date-fns';
 
-const ClockInBox = ({navigation}) => {
+const ClockInBox = ({navigation, changeTimeSheet}) => {
   const [clockedIn, setClockedIn] = useState(0);
   const [intervalId, setIntervalId] = useState(0);
   const [companyLocation, setCompanyLocation] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [user, setUser] = useState();
+  const [timesheetData, setTimeSheet] = useState({});
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; // Radius of the Earth in kilometers
@@ -85,7 +86,7 @@ const ClockInBox = ({navigation}) => {
     // return false;
   };
 
-  const pingLocation = () => {
+  let pingLocation = () => {
     getCurrentLocation().then(result => {
       if (result) {
         //API call to update clock-out time.
@@ -105,11 +106,15 @@ const ClockInBox = ({navigation}) => {
           date: format(new Date(), 'yyyy-MM-dd'),
           clockOut: new Date().toISOString(),
         };
+        setTimeSheet({...timesheetData, clockOut: new Date().toISOString()});
+        changeTimeSheet({
+          ...timesheetData,
+          clockOut: new Date().toISOString(),
+        });
+
         clockOut(payload).then(res => {
           setClockedIn(0);
-          console.log('Interval ID: ' + intervalId);
           clearInterval(intervalId);
-          Alert.alert('Success', 'You are successfully clocked out.');
         });
       }
     });
@@ -117,6 +122,8 @@ const ClockInBox = ({navigation}) => {
 
   const validateClockIn = async () => {
     const isClockedIn = await checkClockIn();
+    setTimeSheet(isClockedIn);
+    changeTimeSheet(isClockedIn);
     if (isClockedIn) {
       setClockedIn(1);
       getCurrentLocation().then(async result => {
@@ -132,7 +139,6 @@ const ClockInBox = ({navigation}) => {
           };
           clockOut(payload).then(res => {
             setClockedIn(0);
-            console.log('Interval ID: ' + intervalId);
             clearInterval(intervalId);
             Alert.alert('Success', 'You are successfully clocked out.');
           });
@@ -145,6 +151,8 @@ const ClockInBox = ({navigation}) => {
     if (clockedIn == 0) {
       getCurrentLocation().then(async result => {
         if (result) {
+          setTimeSheet({clockIn: new Date().toISOString()});
+          changeTimeSheet({clockIn: new Date().toISOString()});
           //API call for clock in
           let payload = {
             employeeId: user?.employeeId,
@@ -164,6 +172,8 @@ const ClockInBox = ({navigation}) => {
         }
       });
     } else {
+      setTimeSheet({...timesheetData, clockOut: new Date().toISOString()});
+      changeTimeSheet({...timesheetData, clockOut: new Date().toISOString()});
       //API call for clock out
       let payload = {
         employeeId: user?.employeeId,
@@ -172,7 +182,6 @@ const ClockInBox = ({navigation}) => {
       };
       clockOut(payload).then(res => {
         setClockedIn(0);
-        console.log('Interval ID: ' + intervalId);
         clearInterval(intervalId);
         Alert.alert('Success', 'You are successfully clocked out.');
       });

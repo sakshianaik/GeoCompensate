@@ -62,9 +62,11 @@ class TimesheetController {
                 clockedOut: false
             }
             const response = await checkClockedIn(data);
-            response.clockedOut = true;
-            response.clockOut = payload.clockOut;
-            response.save();
+            if(response != null){
+                response.clockedOut = true;
+                response.clockOut = payload.clockOut;
+                response.save();    
+            }
             return res.status(200).json({
                 type: "success",
                 message: "Success result",
@@ -88,8 +90,10 @@ class TimesheetController {
                 clockedOut: false
             }
             const response = await checkClockedIn(data);
-            response.clockOut = payload.clockOut;
-            response.save();
+            if (response != null) {
+                response.clockOut = payload.clockOut;
+                response.save();
+            }
             return res.status(200).json({
                 type: "success",
                 message: "Success result",
@@ -131,10 +135,10 @@ class TimesheetController {
         }
     }
 
-    static async fetchTimesheet(req,res){
+    static async fetchTimesheet(req, res) {
         try {
             const employeeId = req.params.empId;
-            let timesheet = await getTimesheet({employeeId});
+            let timesheet = await getTimesheet({ employeeId });
             return res.status(200).json({
                 type: "success",
                 message: "Success result of timesheet",
