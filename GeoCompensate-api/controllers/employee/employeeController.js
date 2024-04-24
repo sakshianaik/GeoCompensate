@@ -1,3 +1,4 @@
+const { sendEmail } = require("../../services/email/emailService");
 const { getEmployeeId, saveEmployee, getEmployees, getOneEmpData, deleteEmployee} = require("../../services/employee/employeeService");
 
 class EmployeeController {
@@ -12,6 +13,15 @@ class EmployeeController {
             payload.name = payload.firstName + ' ' +  payload.lastName;
             let emp = await saveEmployee(payload);
             emp.save();
+            if(emp){
+                const emailData = {
+                    body: `Dear ${payload?.name}, Your Account has been created. Your login credentials are <br> EmployeeID: ${payload?.employeeId} <br>Password: ${payload?.password}.<br> Make sure you change your password after login.`,
+                    isBodyHtml: true,
+                    toEmail: payload?.email,
+                    subject: 'Welcome to GeoCompensate!'
+                }
+                await sendEmail(emailData);
+            }
             return res.status(200).json({
                 type: "success",
                 message: "Success result",

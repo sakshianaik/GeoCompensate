@@ -3,8 +3,12 @@ import {StyleSheet} from 'react-native';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Colors} from '../../assets/themes';
+import {format, isValid} from 'date-fns';
 
-const TimingItems = () => {
+const TimingItems = ({timesheetData}) => {
+  React.useEffect(() => {
+
+  }, [timesheetData]);
   return (
     <>
       <View style={styling.timeShowFour}>
@@ -13,16 +17,24 @@ const TimingItems = () => {
             Clock In
           </Text>
           <View style={styling.clockInBorder} />
-          <Text style={styling.time}>5:29 AM</Text>
+          <Text style={styling.time}>
+            {timesheetData?.clockIn == null
+              ? '-'
+              : format(timesheetData?.clockIn, 'HH:mm:ss')}
+          </Text>
         </View>
         <View style={styling.clkItem}>
           <Text style={styling.clkItemTitle} variant="labelMedium">
-            Meal Start
+            Clock Out
           </Text>
           <View style={styling.mealStartBorder} />
-          <Text style={styling.time}>10:42 AM</Text>
+          <Text style={styling.time}>
+            {timesheetData?.clockOut == null
+              ? '-'
+              : format(timesheetData?.clockOut, 'HH:mm:ss')}
+          </Text>
         </View>
-        <View style={styling.clkItem}>
+        {/* <View style={styling.clkItem}>
           <Text style={styling.clkItemTitle} variant="labelMedium">
             Meal End
           </Text>
@@ -35,18 +47,19 @@ const TimingItems = () => {
           </Text>
           <View style={styling.clockOutBorder} />
           <Text style={styling.time}>1:29 PM</Text>
-        </View>
+        </View> */}
       </View>
       <Text style={styling.payTitle} variant="headlineSmall">
-        Pay Period : Mar 15 - Mar 21
+        Pay Period : April 15 - April 28
       </Text>
       <View style={styling.payPeriod}>
         <View style={styling.payItems}>
           <View style={styling.payItem}>
             <Text style={styling.pyItTitle}>Worked Hours</Text>
             <View style={styling.pyItCont}>
-              <Text style={styling.pyItIcon}>Ic</Text>
-              <Text style={styling.pyItContaPrc}>19.667</Text>
+              <Text style={styling.pyItIcon}>
+                <Text style={styling.pyItContaPrc}>19.667</Text>
+              </Text>
             </View>
           </View>
           <View style={styling.payItem}>
