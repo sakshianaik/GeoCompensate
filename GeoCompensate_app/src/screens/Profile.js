@@ -1,20 +1,20 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
-import { Colors } from '../assets/themes';
+import {StyleSheet, View} from 'react-native';
+import {Button, Text} from 'react-native-paper';
+import {Colors} from '../assets/themes';
 import Header from '../components/molecules/header';
 
-const Profile = ({ navigation, employeeId }) => {
-
+const Profile = ({navigation, employeeId, isHR}) => {
   const handleEditProfile = () => {
-    console.warn(employeeId)
-    navigation.navigate('Edit Profile', { employeeId: employeeId , isHR:false});
-  }
+    navigation.navigate('Edit Profile', {employeeId: employeeId, isHR: isHR});
+  };
 
   const handleChangePassword = () => {
-    console.warn("change password button prressed")
-  }
-
+    navigation.navigate('Change Password', {
+      employeeId: employeeId,
+      isHR: isHR,
+    });
+  };
 
   return (
     <View style={styles.container}>

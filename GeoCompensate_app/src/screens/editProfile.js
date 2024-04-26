@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { TextInput, Button, HelperText } from 'react-native-paper';
-import { Colors } from '../assets/themes';
-import { Dropdown } from 'react-native-element-dropdown';
-import { updateEmpProfile } from '../services/employee';
-import { fetchEmployeeWithID } from '../services/employee';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {TextInput, Button, HelperText} from 'react-native-paper';
+import {Colors} from '../assets/themes';
+import {Dropdown} from 'react-native-element-dropdown';
+import {updateEmpProfile} from '../services/employee';
+import {fetchEmployeeWithID} from '../services/employee';
 
-const EditProfile = ({ navigation, route }) => {
+const EditProfile = ({navigation, route}) => {
   const [empID, setEmpID] = useState('');
   const [firstName, setfirstName] = useState('');
   const [lastName, setlastName] = useState('');
@@ -18,15 +18,16 @@ const EditProfile = ({ navigation, route }) => {
   const [departmentId, setDepartmentId] = useState('');
   const [hourlyPay, setHourlyPay] = useState('');
   const [errorMsg, setErrorMsg] = React.useState(null);
-  
-  const [disabledHourlyPay, setDisabledHourlyPay] = useState(true);
+
+  const [hrEditables, setHREditables] = useState(true);
   const [disabled, setDisabled] = useState(true);
   const [editBtn, setEditBtn] = useState(true);
   const [saveChangesBtn, setSaveChnagesBtn] = useState(false);
 
   useEffect(() => {
-    employeeId = route.params.employeeId;
-    console.log("Param route in edit profiile",route)
+    const employeeId = route.params.employeeId;
+    setIsHR(route.params.isHR);
+    setDepartmentId(route.params.departmentId);
     setEmpID(employeeId);
     fetchEmployeeWithID(employeeId).then(empData => {
       setfirstName(empData?.firstName);
@@ -34,10 +35,10 @@ const EditProfile = ({ navigation, route }) => {
       setEmail(empData?.email);
       setPhone(empData?.phone?.toString());
       setSsn(empData?.ssn?.toString());
-      setHourlyPay(empData?.hourlyPay?.toString())
-      
+      setHourlyPay(empData?.hourlyPay?.toString());
+      setDepartmentId(empData?.departmentId);
     });
-  }, [navigation]);
+  }, [navigation, route]);
 
   const companyDetails = {
     companyId: 1,
@@ -66,14 +67,12 @@ const EditProfile = ({ navigation, route }) => {
     setDisabled(false);
     setSaveChnagesBtn(true);
     setEditBtn(false);
-    setIsHR(route.params.isHR);
-    setDisabledHourlyPay(!route.params.isHR);
+    if (isHR) {
+      setHREditables(false);
+    }
   };
 
   const saveChanges = async () => {
-    setSaveChnagesBtn(false);
-    setEditBtn(true);
-    setDisabled(true);
     const dataToSend = {
       employeeId: empID,
       firstName: firstName,
@@ -81,14 +80,43 @@ const EditProfile = ({ navigation, route }) => {
       name: firstName + ' ' + lastName,
       email: email,
       phone: phone,
-      hourlyPay:hourlyPay,
-      isHR: isHR
     };
-    // if(isHR){
-      
-    //   // dataToSend.departmentId(departmentDetails.departmentId)
-    // }
-    const data = await updateEmpProfile(dataToSend);
+    if (isHR) {
+      (dataToSend.hourlyPay = hourlyPay),
+        (dataToSend.ssn = ssn),
+        (dataToSend.departmentId = departmentId),
+        (dataToSend.isHR = isHR);
+      if (
+        ssn &&
+        hourlyPay &&
+        departmentId &&
+        firstName &&
+        lastName &&
+        email &&
+        phone
+      ) {
+        const data = await updateEmpProfile(dataToSend);
+        setSaveChnagesBtn(false);
+        setEditBtn(true);
+        setDisabled(true);
+        setHREditables(true);
+        setErrorMsg('');
+      } else {
+        setErrorMsg('All fields are mandatory');
+      }
+    }
+    if (!isHR) {
+      if (firstName && lastName && email && phone) {
+        const data = await updateEmpProfile(dataToSend);
+        setSaveChnagesBtn(false);
+        setEditBtn(true);
+        setDisabled(true);
+        setHREditables(true);
+        setErrorMsg('');
+      } else {
+        setErrorMsg('All fields are mandatory');
+      }
+    }
   };
 
   const [value, setValue] = useState(departmentDetails[0].departmentName);
@@ -129,7 +157,7 @@ const EditProfile = ({ navigation, route }) => {
         label={'SSN'}
         style={styles.input}
         value={ssn}
-        disabled={disabled}
+        disabled={hrEditables}
         onChangeText={text => setSsn(text)}
         keyboardType="numeric"
       />
@@ -137,7 +165,7 @@ const EditProfile = ({ navigation, route }) => {
         label={'Hourly Pay'}
         style={styles.input}
         value={hourlyPay}
-        disabled={setDisabledHourlyPay}
+        disabled={hrEditables}
         onChangeText={text => setHourlyPay(text)}
         keyboardType="numeric"
       />
@@ -150,7 +178,7 @@ const EditProfile = ({ navigation, route }) => {
       />
       <View style={styles.dropdownContainer}>
         <Dropdown
-          disable={true}
+          disable={hrEditables}
           style={styles.dropdown}
           labelStyle={styles.labelStyle}
           selectedTextStyle={styles.selectedTextStyle}
@@ -165,7 +193,6 @@ const EditProfile = ({ navigation, route }) => {
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            console.log(item);
             setValue(item.departmentName);
             setIsFocus(false);
           }}

@@ -1,5 +1,5 @@
 const { sendEmail } = require("../../services/email/emailService");
-const { getEmployeeId, saveEmployee, getEmployees, getOneEmpData, deleteEmployee} = require("../../services/employee/employeeService");
+const { getEmployeeId, saveEmployee, getEmployees, getOneEmpData, deleteEmployee, checkCurrentPassword} = require("../../services/employee/employeeService");
 
 class EmployeeController {
     static async registerEmployee(req, res) {
@@ -114,6 +114,34 @@ class EmployeeController {
                 message: "Employee record deleted successfully",
                 data : delEmpData
             })
+        } catch(error){
+            return res.status(500).json({
+                type: "error",
+                message : "invalid employee name searched",
+                id : empId
+            });
+        }
+    }
+
+    static async changePassword(req,res){
+        try{
+            const {employeeId, currentPassword, newPassword} = req.body;
+            let empData = await checkCurrentPassword({employeeId,currentPassword});
+            if(empData){
+                empData.password = newPassword;
+                empData.save();
+                return res.status(200).json({
+                    type: "Success",
+                    message: "User password changed successfully",
+                    data : empData
+                })
+            }else{
+                return res.status(200).json({
+                    type: "Failure",
+                    message: "User current password doesn't match.",
+                    data : null
+                })
+            }
         } catch(error){
             return res.status(500).json({
                 type: "error",

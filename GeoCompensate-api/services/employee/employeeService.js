@@ -71,3 +71,17 @@ exports.deleteEmployee = (empId) => {
   }
   return result;
 };
+
+exports.checkCurrentPassword = (data) => {
+  let result;
+  try {
+    let matchQuery = {
+      employeeId: data.employeeId,
+      password: data.currentPassword
+    };
+    result = Employee.findOne(matchQuery);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+  return result;
+}
