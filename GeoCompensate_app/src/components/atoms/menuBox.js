@@ -1,16 +1,10 @@
 import * as React from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
-import {
-  Menu,
-  Divider,
-  Provider,
-  Button,
-  Avatar,
-  PaperProvider,
-} from 'react-native-paper';
+import {Menu, Button, Avatar, PaperProvider} from 'react-native-paper';
 import {Colors} from '../../assets/themes';
+import {relieveEmployee} from '../../services/employee';
 
-const MenuBox = ({navigation, employeeId}) => {
+const MenuBox = ({navigation, employeeId, employees, setEmployees}) => {
   const [visible, setVisible] = React.useState(false);
   const [menuAnchor, setMenuAnchor] = React.useState({x: 0, y: 0});
   const openMenu = event => {
@@ -27,12 +21,30 @@ const MenuBox = ({navigation, employeeId}) => {
     setVisible(false);
   };
 
+  const removeEmployee = empId => {
+    relieveEmployee(empId);
+    const filteredEmployees = employees.filter(
+      item => item.employeeId !== empId,
+    );
+    setEmployees(filteredEmployees);
+  };
+
   const items = [
     {
       key: 1,
       name: 'Edit',
       action: () => {
-        navigation.navigate("Edit Profile", {employeeId: employeeId, isHR:true});
+        return Alert.alert(
+          'Edit Employee',
+          'Are you sure you want to edit employee?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => {},
+            },
+            {text: 'Edit', onPress: () => {}},
+          ],
+        );
       },
     },
     {
@@ -47,7 +59,12 @@ const MenuBox = ({navigation, employeeId}) => {
               text: 'Cancel',
               onPress: () => {},
             },
-            {text: 'Relieve', onPress: () => {}},
+            {
+              text: 'Relieve',
+              onPress: () => {
+                removeEmployee(employeeId);
+              },
+            },
           ],
         );
       },
@@ -56,7 +73,7 @@ const MenuBox = ({navigation, employeeId}) => {
       key: 3,
       name: 'View timesheet',
       action: () => {
-        navigation.navigate("View Employee's Timesheet", {data: employeeId});
+        navigation.navigate('View Timesheet', {data: employeeId});
       },
     },
   ];

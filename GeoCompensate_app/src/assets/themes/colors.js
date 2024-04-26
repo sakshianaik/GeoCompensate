@@ -8,6 +8,7 @@ const Colors = {
   white: '#FFFFFF',
   danger: '#FF0E0E',
   lavender: '#E6E6FA',
+  lightPurple: '#F8F4FE',
   babyBlue: '#89CFF0',
   purpleBlue: '#2F3C7E',
   softPink: '#FBEAEB',

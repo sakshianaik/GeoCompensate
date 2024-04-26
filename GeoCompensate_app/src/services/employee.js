@@ -10,23 +10,12 @@ export const fetchEmployee = async searchQuery => {
   return response?.data?.data;
 };
 
-export const updateEmpProfile = async data => {
+export const relieveEmployee = async employeeId => {
   let response;
   try {
-    response = await httpClient.put('/employee/profile',data);
+    response = await httpClient.delete(`employee/profile/${employeeId}`);
   } catch (error) {
     console.error('Error sending data:', JSON.stringify(error));
   }
-  return response?.data?.data;
-};
-
-export const fetchEmployeeWithID = async employeeId => {
-  let response;
-  try {
-    console.log("employee id auth.js",employeeId)
-    response = await httpClient.get(`/employee/profile/${employeeId}`);
-  } catch (error) {
-    console.error('Error sending data:', JSON.stringify(error));
-  }
-  return response?.data?.data;
+  return response;
 };
