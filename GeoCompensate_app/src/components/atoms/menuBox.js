@@ -10,7 +10,7 @@ import {
 } from 'react-native-paper';
 import {Colors} from '../../assets/themes';
 
-const MenuBox = () => {
+const MenuBox = ({navigation, employeeId}) => {
   const [visible, setVisible] = React.useState(false);
   const [menuAnchor, setMenuAnchor] = React.useState({x: 0, y: 0});
   const openMenu = event => {
@@ -23,18 +23,41 @@ const MenuBox = () => {
     setMenuAnchor(anchor);
     setVisible(true);
   };
-  const closeMenu = () => {
+  const closeMenu = event => {
     setVisible(false);
   };
 
   const items = [
     {
       key: 1,
-      name: 'Delete',
+      name: 'Edit',
+      action: () => {
+        navigation.navigate("Edit Profile", {employeeId: employeeId, isHR:true});
+      },
     },
     {
       key: 2,
-      name: 'Edit',
+      name: 'Relieve',
+      action: () => {
+        return Alert.alert(
+          'Relieve Employee',
+          'Are you sure you want to relieve employee?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => {},
+            },
+            {text: 'Relieve', onPress: () => {}},
+          ],
+        );
+      },
+    },
+    {
+      key: 3,
+      name: 'View timesheet',
+      action: () => {
+        navigation.navigate("View Employee's Timesheet", {data: employeeId});
+      },
     },
   ];
   return (
@@ -60,19 +83,7 @@ const MenuBox = () => {
                 <Menu.Item
                   key={item.key}
                   style={styles.menuItem}
-                  onPress={() => {
-                    return Alert.alert(
-                      'Relieve Employee',
-                      'Are you sure you want to relieve employee?',
-                      [
-                        {
-                          text: 'Cancel',
-                          onPress: () => {},
-                        },
-                        {text: 'Relieve', onPress: () => {}},
-                      ],
-                    );
-                  }}
+                  onPress={item.action}
                   title={item.name}
                 />
               ))}
@@ -93,6 +104,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     width: '100%',
     justifyContent: 'center',
+    // zIndex: 100,
   },
   menu: {
     flex: 1,
@@ -100,7 +112,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     left: 20,
-    // zIndex: 100,
+    height: 20,
+    maxHeight: 20,
+    zIndex: 9999,
   },
   menuItem: {
     color: Colors.black,

@@ -6,6 +6,7 @@ import Login from './src/screens/Login';
 import SearchEmployee from './src/screens/SearchEmployee';
 import HRDashboard from './src/screens/HRDashboard';
 import RegisterEmployee from './src/screens/RegisterEmployee';
+import EditProfile from './src/screens/editProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,12 @@ function MyStack() {
         component={RegisterEmployee}
         options={{headerBackTitle: false}}
       />
+      <Stack.Screen
+        name="Edit Profile"
+        component={EditProfile}
+        options={{headerBackTitle: false}}
+      />
+      
     </Stack.Navigator>
   );
 }

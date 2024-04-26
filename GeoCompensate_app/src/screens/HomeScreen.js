@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {BottomNavigation} from 'react-native-paper';
 import Dashboard from './Dashboard';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EditProfile from './EditProfile';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import Profile from './Profile';
 import HRDashboard from './HRDashboard';
 import EmployeeViewTimesheet from './EmployeeViewTimesheet';
 
@@ -14,8 +14,9 @@ const TimesheetRoute = navigation => (
   <EmployeeViewTimesheet navigation={navigation} />
 );
 
-const ProfileRoute = (navigation, empID) => (
-  <EditProfile navigation={navigation} employeeId={empID} />
+const ProfileRoute = (navigation, empId) => (
+  // <Profile navigation={navigation} employeeId={empId} />
+  <Profile navigation={navigation} employeeId={"10004"} />
 );
 
 const HomeScreen = ({navigation}) => {
@@ -43,16 +44,16 @@ const HomeScreen = ({navigation}) => {
   ]);
 
   useEffect(() => {
-    AsyncStorage.getItem('user')
-      .then(value => {
-        value = JSON.parse(value);
-        if (value == null) {
-          navigation.navigate('Login');
-        } else {
-          setEmpID(value?.employeeId);
-        }
-      })
-      .catch(error => console.error('AsyncStorage error: ', error));
+    // AsyncStorage.getItem('user')
+    //   .then(value => {
+    //     value = JSON.parse(value);
+    //     if (value == null) {
+    //       navigation.navigate('Login');
+    //     } else {
+    //       setEmpID(value?.employeeId);
+    //     }
+    //   })
+    //   .catch(error => console.error('AsyncStorage error: ', error));
   }, [navigation, empID]);
 
   const renderScene = BottomNavigation.SceneMap({
