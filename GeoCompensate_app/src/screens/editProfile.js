@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import {TextInput, Button, HelperText} from 'react-native-paper';
 import {Colors} from '../assets/themes';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -117,6 +117,7 @@ const EditProfile = ({navigation, route}) => {
         setErrorMsg('All fields are mandatory');
       }
     }
+    Alert.alert('Success', 'Employee data saved successfully.');
   };
 
   const [value, setValue] = useState(departmentDetails[0].departmentName);

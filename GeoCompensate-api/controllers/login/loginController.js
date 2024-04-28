@@ -12,7 +12,6 @@ class LoginController {
                 delete emp.password
                 delete emp.createdDate
                 delete emp.modifiedDate
-                delete emp.hourlyPay
                 access_token = jwt.sign(emp, process.env.JWT_SECRET, { expiresIn: "2h" })
                 emp['access_token'] = access_token
             }

@@ -159,6 +159,7 @@ const ClockInBox = ({navigation, changeTimeSheet}) => {
             date: format(new Date(), 'yyyy-MM-dd'),
             clockIn: new Date().toISOString(),
             clockOut: new Date().toISOString(),
+            hourlyPay: user?.hourlyPay,
             clockedLocation: [userLocation?.latitude, userLocation?.longitude],
           };
           clockIn(payload).then(res => {

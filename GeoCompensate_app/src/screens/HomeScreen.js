@@ -10,8 +10,8 @@ const HomeRoute = navigation => <Dashboard navigation={navigation} />;
 
 const HRHomeRoute = navigation => <HRDashboard navigation={navigation} />;
 
-const TimesheetRoute = navigation => (
-  <EmployeeViewTimesheet navigation={navigation} />
+const TimesheetRoute = (navigation, empID) => (
+  <EmployeeViewTimesheet navigation={navigation} employeeId={empID} />
 );
 
 const ProfileRoute = (navigation, empId, isHR) => (
@@ -65,10 +65,9 @@ const HomeScreen = ({navigation}) => {
       return HRHomeRoute(navigation);
     },
     timesheet: () => {
-      return TimesheetRoute(navigation);
+      return TimesheetRoute(navigation, empID);
     },
     profile: () => {
-      console.log('profile empID', empID);
       return ProfileRoute(navigation, empID, isHR);
     },
   });

@@ -3,11 +3,58 @@ import {StyleSheet} from 'react-native';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Colors} from '../../assets/themes';
-import {format, isValid} from 'date-fns';
+import {
+  endOfWeek,
+  format,
+  isValid,
+  isWithinInterval,
+  parseISO,
+  startOfWeek,
+  subWeeks,
+} from 'date-fns';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {fetchEmployeeTimesheet} from '../../services/timesheet';
 
 const TimingItems = ({timesheetData}) => {
+  const [totalHours, setHours] = React.useState(0);
+  const [totalPay, setPay] = React.useState(0);
+  const [startOfTwoWeeksAgo, setStartDate] = React.useState(null);
+  const [endOfLastWeek, setEndDate] = React.useState(null);
   React.useEffect(() => {
+    const today = new Date();
+    const twoWeeksAgo = subWeeks(today, 1);
+    setStartDate(startOfWeek(twoWeeksAgo));
+    setEndDate(endOfWeek(today));
 
+    AsyncStorage.getItem('user')
+      .then(value => {
+        value = JSON.parse(value);
+        if (value != null) {
+          fetchEmployeeTimesheet(value?.employeeId).then(res => {
+            if (res && res.length > 0) {
+              const sum = res
+                .filter(item =>
+                  isWithinInterval(parseISO(item.date), {
+                    start: startOfTwoWeeksAgo,
+                    end: endOfLastWeek,
+                  }),
+                )
+                .reduce(
+                  (acc, curr) => {
+                    acc.totalPay += curr.totalPay;
+                    acc.totalHours += curr.totalHours;
+                    return acc;
+                  },
+                  {totalPay: 0, totalHours: 0},
+                );
+              setPay(sum.totalPay.toFixed(2));
+              setHours(sum.totalHours.toFixed(2));
+              console.log(sum);
+            }
+          });
+        }
+      })
+      .catch(error => console.error('AsyncStorage error: ', error));
   }, [timesheetData]);
   return (
     <>
@@ -50,7 +97,11 @@ const TimingItems = ({timesheetData}) => {
         </View> */}
       </View>
       <Text style={styling.payTitle} variant="headlineSmall">
-        Pay Period : April 15 - April 28
+        Pay Period : 
+        {isValid(startOfTwoWeeksAgo)
+          ? format(startOfTwoWeeksAgo, 'MMM dd')
+          : ''}
+         - {isValid(endOfLastWeek) ? format(endOfLastWeek, 'MMM dd') : ''}
       </Text>
       <View style={styling.payPeriod}>
         <View style={styling.payItems}>
@@ -58,14 +109,14 @@ const TimingItems = ({timesheetData}) => {
             <Text style={styling.pyItTitle}>Worked Hours</Text>
             <View style={styling.pyItCont}>
               <Text style={styling.pyItIcon}>
-                <Text style={styling.pyItContaPrc}>19.667</Text>
+                <Text style={styling.pyItContaPrc}>{totalHours}</Text>
               </Text>
             </View>
           </View>
           <View style={styling.payItem}>
             <Text style={styling.pyItTitle}>Weekly Earnings</Text>
             <View style={styling.pyItCont}>
-              <Text style={styling.pyItIcon}>$125.53</Text>
+              <Text style={styling.pyItIcon}>${totalPay}</Text>
             </View>
           </View>
         </View>
