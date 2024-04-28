@@ -34,17 +34,10 @@ const MenuBox = ({navigation, employeeId, employees, setEmployees}) => {
       key: 1,
       name: 'Edit',
       action: () => {
-        return Alert.alert(
-          'Edit Employee',
-          'Are you sure you want to edit employee?',
-          [
-            {
-              text: 'Cancel',
-              onPress: () => {},
-            },
-            {text: 'Edit', onPress: () => {}},
-          ],
-        );
+        navigation.navigate('Edit Profile', {
+          employeeId: employeeId,
+          isHR: true,
+        });
       },
     },
     {

@@ -1,5 +1,5 @@
 const { sendEmail } = require("../../services/email/emailService");
-const { getEmployeeId, saveEmployee, getEmployees, getOneEmpData, deleteEmployee} = require("../../services/employee/employeeService");
+const { getEmployeeId, saveEmployee, getEmployees, getOneEmpData, deleteEmployee, checkCurrentPassword} = require("../../services/employee/employeeService");
 
 class EmployeeController {
     static async registerEmployee(req, res) {
@@ -76,15 +76,15 @@ class EmployeeController {
     static async updateEmpProfile(req,res){
         try{
             const payload = req.body;
+            console.log("payload controller",payload)
             let empData = await getOneEmpData(payload.employeeId);
-            
             empData.firstName = payload.firstName;
             empData.lastName = payload.lastName;
             empData.name = payload.name;
             empData.email = payload.email;
             empData.phone = payload.phone;
             
-            if(payload.isHR){
+            if(payload.isHR){  
                 empData.ssn = payload.ssn;
                 empData.departmentId = payload.departmentId;  
                 empData.hourlyPay = payload.hourlyPay;   
@@ -114,6 +114,34 @@ class EmployeeController {
                 message: "Employee record deleted successfully",
                 data : delEmpData
             })
+        } catch(error){
+            return res.status(500).json({
+                type: "error",
+                message : "invalid employee name searched",
+                id : empId
+            });
+        }
+    }
+
+    static async changePassword(req,res){
+        try{
+            const {employeeId, currentPassword, newPassword} = req.body;
+            let empData = await checkCurrentPassword({employeeId,currentPassword});
+            if(empData){
+                empData.password = newPassword;
+                empData.save();
+                return res.status(200).json({
+                    type: "Success",
+                    message: "User password changed successfully",
+                    data : empData
+                })
+            }else{
+                return res.status(200).json({
+                    type: "Failure",
+                    message: "User current password doesn't match.",
+                    data : null
+                })
+            }
         } catch(error){
             return res.status(500).json({
                 type: "error",

@@ -1,27 +1,92 @@
-import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import Clock from 'react-live-clock';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Button, Text} from 'react-native-paper';
 import {Colors} from '../assets/themes';
+import Header from '../components/molecules/header';
 
-const Profile = () => {
+const Profile = ({navigation, employeeId, isHR}) => {
+  const handleEditProfile = () => {
+    navigation.navigate('Edit Profile', {employeeId: employeeId, isHR: isHR});
+  };
+
+  const handleChangePassword = () => {
+    navigation.navigate('Change Password', {
+      employeeId: employeeId,
+      isHR: isHR,
+    });
+  };
+
   return (
-    <View>
-      <Clock
-        style={styles.clock}
-        element={Text}
-        format={'HH:mm:ss'}
-        ticking={true}
-        timezone={'US/Central'}
-      />
+    <View style={styles.container}>
+      <Header navigation={navigation} />
+      <View style={styles.buttonContainer}>
+        <Button
+          style={styles.editProfileButton}
+          mode="contained"
+          onPress={handleEditProfile}>
+          <Text style={styles.editProfileButton.searchText}>Edit Profile</Text>
+        </Button>
+        <Button
+          style={styles.changePasswordButton}
+          mode="contained"
+          onPress={handleChangePassword}>
+          <Text style={styles.editProfileButton.searchText}>
+            Change Password
+          </Text>
+        </Button>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  clock: {
-    fontSize: 60,
-    fontWeight: '800',
-    color: Colors.black,
+  container: {
+    height: '100%',
+  },
+  hdrTitle: {
+    paddingVertical: 12,
+    marginTop: 20,
+    paddingHorizontal: 10,
+    fontWeight: 700,
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  welcome: {
+    textAlign: 'center',
+    fontSize: 30,
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 50,
+  },
+  editProfileButton: {
+    backgroundColor: Colors.grayBlue,
+    marginVertical: 20,
+    padding: 10,
+    searchText: {
+      color: Colors.black,
+      fontWeight: 900,
+    },
+  },
+  changePasswordButton: {
+    backgroundColor: Colors.lavender,
+    marginVertical: 20,
+    padding: 10,
+    searchText: {
+      color: Colors.black,
+      fontWeight: 900,
+    },
+  },
+  editButton: {
+    backgroundColor: Colors.grayBlue,
+    marginVertical: 20,
+    padding: 10,
+    searchText: {
+      color: Colors.black,
+      fontWeight: 900,
+    },
   },
 });
 

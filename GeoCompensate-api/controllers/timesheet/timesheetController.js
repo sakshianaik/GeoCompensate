@@ -33,6 +33,7 @@ class TimesheetController {
                 date: payload.date,
                 clockIn: payload.clockIn,
                 clockOut: payload.clockOut,
+                hourlyPay: payload.hourlyPay,
                 type: CLOCK_TYPE.WORK_START,
                 clockedOut: false,
                 clockedLocation: payload.clockedLocation

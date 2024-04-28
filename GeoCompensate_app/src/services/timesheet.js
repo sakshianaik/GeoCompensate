@@ -49,3 +49,13 @@ export const fetchHRViewTimesheet = async employeeId => {
   }
   return response?.data?.data;
 };
+
+export const fetchEmployeeTimesheet = async employeeId => {
+  let response;
+  try {
+    response = await httpClient.get(`/timesheet/employee/${employeeId}`);
+  } catch (error) {
+    console.error('Error sending data:', JSON.stringify(error));
+  }
+  return response?.data?.data;
+};
